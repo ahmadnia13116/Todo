@@ -1,0 +1,139 @@
+﻿@page "/product/{slug}"
+@using MyBlazor.Libraroes.Ptoduct.Models
+@inject IProductService ProductService
+@inject IShappingCartService ShappingCartService
+
+@if (Product != null)
+{
+    <PageTitle>@Product.Name</PageTitle>
+
+    <div class="container mt-4">
+        <div class="row g-4 align-items-start">
+            <!-- بخش تصویر -->
+            <div class="col-md-6 text-center">
+                <img src="/Images/@Product.Image"
+                     alt="@Product.Name"
+                     class="img-fluid rounded shadow-sm border"
+                     style="max-height: 400px; object-fit: contain;" />
+            </div>
+
+            <!-- بخش اطلاعات محصول -->
+            <div class="col-md-6">
+                <h2 class="fw-bold mb-3">@Product.Name</h2>
+
+                <p class="fs-5 text-muted mb-1">
+                    💰 قیمت:
+                    <span class="fw-bold text-success">@Product.Price.ToString("N0") تومان</span>
+                </p>
+
+                <p class="text-secondary small mb-4">کد محصول (SKU): <b>@Product.sku</b></p>
+
+                @if (ShappingCartService.Count() > 0)
+                {
+                    <div class="alert alert-info py-2 small mb-3">
+                        🛒 اقلام موجود در سبد خرید: <b>@ShappingCartService.Count()</b>
+                    </div>
+                }
+
+                <div class="d-flex flex-wrap align-items-center gap-3 mb-3">
+                    <input @bind="Quantity"
+                           @bind:event="oninput"
+                           type="number"
+                           min="1"
+                           placeholder="تعداد"
+                           class="form-control text-center"
+                           style="width: 100px;" />
+
+                    <button type="button" class="btn btn-success flex-grow-1"
+                            @onclick="AddToCart"
+                            >
+                        @if (ShappingCartService.HasProduct(Product.sku))
+                        {
+                            <span>
+                                ✅ در سبد خرید است
+                                @if (Quantity.HasValue)
+                                {
+                                    <text> (+@Quantity)</text>
+                                }
+                            </span>
+                        }
+                        else
+                        {
+                            <span>➕ افزودن به سبد خرید</span>
+                        }
+                    </button>
+                </div>
+
+                <a href="/cart" class="btn btn-outline-primary w-100 mt-2">
+                    مشاهده سبد خرید 🛍
+                </a>
+            </div>
+        </div>
+
+        <hr class="my-5" />
+
+        <!-- محصولات مشابه -->
+        @if (ListProduct != null && ListProduct.Any())
+        {
+            <h4 class="fw-bold mb-3 text-center">محصولات مشابه</h4>
+
+            <div class="row justify-content-center">
+                @foreach (var product in ListProduct.Take(6))
+                {
+                    <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-3">
+                        <ProductItem Product="product" />
+                    </div>
+                }
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div class="container text-center mt-5">
+        <div class="alert alert-warning shadow-sm">
+            <h3 class="mb-2">محصول مورد نظر پیدا نشد 😕</h3>
+            <p class="text-muted">احتمالاً لینک اشتباه است یا محصول حذف شده است.</p>
+            <a href="/" class="btn btn-outline-secondary mt-2">بازگشت به صفحه اصلی</a>
+        </div>
+    </div>
+}
+
+@code {
+    public ProductModel? Product { get; set; }
+    public IList<ProductModel>? ListProduct { get; set; }
+    public int? Quantity { get; set; }
+
+    [Parameter]
+    public string? slug { get; set; }
+
+    protected override void OnInitialized()
+    {
+        LoadProductData();
+        base.OnInitialized();
+    }
+
+    protected override void OnParametersSet()
+    {
+        LoadProductData();
+        base.OnParametersSet();
+    }
+
+    private void LoadProductData()
+    {
+        ListProduct = ProductService.GetAll();
+        if (!string.IsNullOrEmpty(slug))
+        {
+            Product = ProductService.GetProductBySlug(slug);
+        }
+    }
+
+    public void AddToCart()
+    {
+        if (Product != null)
+        {
+            ShappingCartService.AddProduct(Product, Quantity ?? 1);
+            Quantity = null;
+        }
+    }
+}

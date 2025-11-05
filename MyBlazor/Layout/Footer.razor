@@ -1,0 +1,19 @@
+﻿<footer class="bg-body-tertiary text-center text-lg-start">
+    <!-- Copyright -->
+    <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.05);">
+        ©
+        <a class="text-body" href="/"> @year داداشم</a>
+    </div>
+    <!-- Copyright -->
+</footer>
+
+
+@code{
+    string year = "";
+
+    protected override void OnInitialized()
+    {
+        year = DateTime.Now.Year.ToString();
+        base.OnInitialized();
+    }
+}

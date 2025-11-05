@@ -1,0 +1,58 @@
+﻿@page "/Sami"
+@inject HttpClient Http
+
+<h3>Project List</h3>
+
+@if (forecasts == null)
+{
+    <div class="d-flex justify-content-center align-items-center my-5">
+        <div class="spinner-border text-primary me-2" role="status"></div>
+        <p class="mb-0"><em>در حال بارگذاری داده‌ها...</em></p>
+    </div>
+}
+else if (!forecasts.Any())
+{
+    <div class="alert alert-warning text-center my-4">
+        <strong>هیچ داده‌ای یافت نشد 😕</strong>
+    </div>
+}
+else
+{
+    <div class="container mt-4">
+        <div class="row g-3">
+            @foreach (var forecast in forecasts)
+            {
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                    <div class="card shadow-sm border-0 h-100">
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold text-primary">@forecast.title</h5>
+                            <p class="card-text text-muted mb-1">@forecast.name</p>
+                            <small class="text-secondary">ID: @forecast.id</small>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+}
+
+@code {
+    private GetProject[]? forecasts;
+
+  
+
+    protected override async Task OnInitializedAsync()
+    {
+        // آدرس تستی JSON برای تمرین
+        forecasts = await Http.GetFromJsonAsync<GetProject[]>(
+            "https://jsonplaceholder.typicode.com/posts"
+        );
+    }
+
+    public class GetProject
+    {
+        public string? title { get; set; }
+        public string? name { get; set; }
+        public int id { get; set; }
+    }
+}

@@ -1,0 +1,53 @@
+﻿@page "/"
+@using MyBlazor.Libraroes.Product.Models
+@using MyBlazor.Libraroes.Ptoduct
+@using MyBlazor.Libraroes.Ptoduct.Models
+@inject IProductService ProductService
+
+<PageTitle>Product Listing</PageTitle>
+
+<MudContainer  Class="py-6">
+
+    <MudText Typo="Typo.h4"
+    Align="Align.Center"
+    Color="Color.Primary"
+    Class="fw-bold mb-2">
+        🛍️ لیست محصولات
+    </MudText>
+
+    <MudDivider Class="mb-6 mx-auto" Style="width: 150px; border-color: #1976d2;" />
+
+    @if (products?.Any() ?? false)
+    {
+        <MudGrid Class="product-grid" Gutter="3">
+            @foreach (var product in products)
+            {
+                <MudItem xs="12" sm="6" md="4" lg="3">
+                    <ProductItem Product="product" />
+                </MudItem>
+            }
+        </MudGrid>
+    }
+    else
+    {
+        <MudAlert Severity="Severity.Info"
+        Variant="Variant.Filled"
+        Class="text-center mt-5">
+            هیچ محصولی یافت نشد 😔
+        </MudAlert>
+    }
+</MudContainer>
+
+@code {
+    public IList<ProductModel>? products { get; set; }
+
+    protected override void OnInitialized()
+    {
+        products = ProductService.GetAll();
+        base.OnInitialized();
+    }
+    protected override Task OnParametersSetAsync()
+    {
+        return base.OnParametersSetAsync();
+    }
+}

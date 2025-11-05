@@ -1,0 +1,81 @@
+﻿@using MyBlazor.Libraroes.Ptoduct.Models
+@implements IProductAddCart
+@inject IShappingCartService ShappingCartService
+
+
+
+<MudPaper Elevation="6" Class="p-3 rounded-3 shadow-lg">
+    <MudCard Class="w-100 product-card">
+        @if (!string.IsNullOrEmpty(Product?.Image))
+        {
+            <MudCardMedia Image="@($"/Images/{Product.Image}")"
+
+            Class="object-cover rounded-top-md" />
+        }
+
+        <MudCardContent Class="p-4 text-center">
+            <MudText Typo="Typo.h6" Class="fw-bold mb-1 text-primary">
+                <a href="@Product.FullUrl" class="text-decoration-none text-primary">
+                    @Product?.Name
+                </a>
+            </MudText>
+
+            <MudText Typo="Typo.body2" Class="text-muted mb-3">
+                💰 قیمت: <span class="fw-bold text-success">@Product?.Price.ToString("N0") تومان</span>
+            </MudText>
+
+            <MudStack Row Justify="Justify.Center" Spacing="2">
+                <MudNumericField @bind-Value="Quantity"
+                Variant="Variant.Outlined"
+                Min="1"
+                Style="width: 80px;"
+                Placeholder="تعداد" />
+
+                <MudButton Variant="Variant.Filled"
+                Color="Color.Primary"
+                StartIcon="@Icons.Material.Outlined.AddShoppingCart"
+                OnClick="AddToCart"
+                Class="fw-bold">
+                    @if (ShappingCartService.HasProduct(Product.sku))
+                    {
+                        <span>در سبد هست</span>
+                    }
+                    else
+                    {
+                        <span>افزودن</span>
+                    }
+                </MudButton>
+            </MudStack>
+
+            <MudDivider Class="my-3" />
+
+            <MudButton Variant="Variant.Outlined"
+            Color="Color.Info"
+            Href="@Product.FullUrl"
+            EndIcon="@Icons.Material.Outlined.ChevronLeft"
+            Class="w-100">
+                مشاهده جزئیات 📦
+            </MudButton>
+        </MudCardContent>
+    </MudCard>
+</MudPaper>
+
+@code {
+    [Parameter]
+    public ProductModel? Product { get; set; }
+
+    public int? Quantity { get; set; }
+
+    public void AddToCart()
+    {
+        if (Product != null)
+        {
+            ShappingCartService.AddProduct(Product, Quantity ?? 1);
+            Quantity = null;
+        }
+    }
+    public override Task SetParametersAsync(ParameterView parameters)
+    {
+        return base.SetParametersAsync(parameters);
+    }
+}

@@ -1,0 +1,92 @@
+﻿@using MyBlazor.Libraroes.ShoppingCart
+@using MyBlazor.Libraroes.ShoppingCart.Model
+
+@page "/Cart"
+@inject IShappingCartService ShappingCartService
+
+<PageTitle>🛒 سبد خرید</PageTitle>
+
+<div class="container mt-5">
+    <h2 class="fw-bold mb-4 text-center">🛍 سبد خرید شما</h2>
+
+    @if (ShappingCartService.GetShoppingCart()?.Items?.Any() != true)
+    {
+        <div class="alert alert-warning text-center py-4 shadow-sm">
+            <h5>سبد خرید شما خالی است 😕</h5>
+            <p class="text-muted mb-3">برای شروع خرید، به فروشگاه سر بزنید.</p>
+            <a href="/" class="btn btn-outline-primary px-4">بازگشت به فروشگاه</a>
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive shadow-sm rounded-3">
+            <table class="table align-middle mb-4">
+                <thead class="table-light">
+                    <tr class="text-center">
+                        <th>تصویر</th>
+                        <th>نام محصول</th>
+                        <th>تعداد</th>
+                        <th>قیمت واحد</th>
+                        <th>جمع جزء</th>
+                        <th>حذف</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in ShappingCartService.GetShoppingCart().Items)
+                    {
+                        <tr class="text-center">
+                            <td style="width: 140px;">
+                                <img src="/Images/@item.Product.Image"
+                                     alt="@item.Product.Name"
+                                     class="img-thumbnail rounded"
+                                     style="max-width:100px; height:auto;">
+                            </td>
+                            <td class="fw-bold">@item.Product.Name</td>
+                            <td>
+                                <span class="badge bg-secondary fs-6">@item.Quantity</span>
+                            </td>
+                            <td class="text-success fw-bold">@item.Product.Price.ToString("N0") تومان</td>
+                            <td class="fw-bold">@((item.Product.Price * item.Quantity).ToString("N0")) تومان</td>
+                            <td>
+                                <button class="btn btn-outline-danger btn-sm px-3"
+                                        @onclick="() => RemoveItem(item)">
+                                    حذف 🗑
+                                </button>
+
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mt-4 flex-wrap gap-3">
+            <a href="/" class="btn btn-outline-secondary px-4">
+                ← ادامه خرید
+            </a>
+
+            <div class="card shadow-sm border-0 px-4 py-3">
+                <p class="mb-1 text-muted">مجموع کل:</p>
+                <h4 class="fw-bold text-success">
+                    @TotalPrice().ToString("N0") تومان
+                </h4>
+                <button class="btn btn-success w-100 mt-2 px-4">
+                    ادامه به پرداخت 💳
+                </button>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    private void RemoveItem(ShappingCartItemModel Item)
+    {
+        ShappingCartService.DeleteProduct(Item);
+    }
+
+    private decimal TotalPrice()
+    {
+        var cart = ShappingCartService.GetShoppingCart();
+        return cart?.Items?.Sum(i => i.Product.Price * i.Quantity) ?? 0;
+    }
+}

@@ -1,0 +1,73 @@
+﻿<hr />
+
+<h3>List</h3>
+
+<table class="table table-responsive">
+	<thead>
+		<tr>
+			<td>#</td>
+			<td></td>
+			<td></td>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var item in Items)
+		{
+			<tr>
+				<td>
+					<input type="checkbox" checked="@((SelectedItem == item) ? true : false)" />
+
+
+				</td>
+				<td>@item</td>
+				<td>
+					<button class="btn btn-outline-danger flex-grow-1"
+							@onclick="@(()=>Selected(item))">
+						انتخاب
+					</button>
+
+					<button class="btn btn-outline-success flex-grow-1"
+							@onclick="@(()=>ShowMessageFromParent(item))">
+						ویرایش
+					</button>
+
+					<button class="btn btn-outline-danger flex-grow-1" @onclick="Del"> حذف</button>
+				</td>
+			</tr>
+		}
+	</tbody>
+</table>
+
+<p>@Message</p>
+
+
+@code {
+
+	[Parameter]
+	public EventCallback<string> OnEdit { get; set; }
+
+	[Parameter] public List<string> Items { get; set; }
+
+	[Parameter] public string SelectedItem { get; set; }
+	[Parameter] public EventCallback<string> SelectedItemChanged { get; set; }
+
+	public string Message { get; set; } = "ابتدا";
+
+	public async Task ShowMessageFromParent(string text)
+	{
+		await OnEdit.InvokeAsync(text);
+	}
+
+	private async Task Selected(string text)
+	{
+		SelectedItem = text;
+		await SelectedItemChanged.InvokeAsync(SelectedItem);
+	}
+
+
+	public void Del()
+	{
+		Message = " ";
+		StateHasChanged();
+	}
+}

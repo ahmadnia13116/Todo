@@ -1,0 +1,25 @@
+﻿<h4>Child Component</h4>
+<p>@Text</p>
+
+@code {
+    [Parameter]
+    public string Text { get; set; }
+
+    protected override void OnInitialized()
+    {
+        Console.WriteLine("Child: OnInitialized");
+    }
+
+    protected override void OnParametersSet()
+    {
+        Console.WriteLine("Child: OnParametersSet");
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+            Console.WriteLine("Child: OnAfterRender (firstRender = true)");
+        else
+            Console.WriteLine("Child: OnAfterRender (firstRender = false)");
+    }
+}

@@ -1,0 +1,44 @@
+﻿<h3>TestTwoWayComponent</h3>
+
+<input @bind="firstName" @bind:event="oninput" placeholder="First name" />
+<input @bind="lastName" @bind:event="oninput" placeholder="Last name" />
+
+<input @attributes=AllOtherAttributes
+	   class="row" 
+	   placeholder="AllOtherAttributes" />
+
+<p>Your name is: @firstName @lastName</p>
+
+
+<div>
+	slam dadsh : @shomare
+
+</div>
+<h1 style="color:@Color">Welcome @Name!</h1>
+
+<button @onclick="val"></button>
+
+
+@code {
+	[Parameter(CaptureUnmatchedValues = true)]
+	public Dictionary<string, object>? AllOtherAttributes { get; set; }
+
+
+	[Parameter]
+	public int shomare { get; set; }
+
+	void val()
+	{
+		shomare++;
+	}
+
+
+	private string firstName = "mmd";
+	private string lastName = "ahmadi";
+
+	[CascadingParameter(Name = "UserName")]
+	public string Name { get; set; }
+
+	[CascadingParameter(Name = "ThemeColor")]
+	public string Color { get; set; }
+}

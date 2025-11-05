@@ -1,0 +1,96 @@
+﻿@page "/Index"
+@inject IJSRuntime JSRuntime
+<h3>Index</h3>
+
+selected item: @name
+
+<input @bind:event="oninput" type="color" @bind="@themeColor" />
+<input  type="text" @bind-value="@userName" />
+
+<CascadingValue Value="themeColor" Name="ThemeColor"  >
+	<CascadingValue Value="userName" >
+		<TestTwoWayComponent alt="test" title="hello" class="bg-warning" />
+	</CascadingValue>
+</CascadingValue>
+
+
+@if (model is not null)
+{
+	<List Items=model
+	@bind-SelectedItem="@name"
+	OnEdit="EditHandler" />
+}
+else
+{
+	<span>loading...</span>
+
+}
+
+
+<button @onclick="GetInputFromPrompt">Enter and Confirm Name</button>
+
+@if (!string.IsNullOrEmpty(userInput))
+{
+	<p>User Input: <strong>@userInput</strong></p>
+	<p>Status: @status</p>
+}
+
+@code {
+
+	private string themeColor = "#000000";
+	private string userName = "Ali";
+	private string? userInput;
+	private string? status;
+	private List<string> model = new List<string>();
+
+	private string name;
+
+	protected override void OnInitialized()
+	{
+		model = new List<string>()
+		{
+			"arash",
+			"Mohammadreza"
+		};
+
+		name = model.FirstOrDefault();
+		base.OnInitialized();
+	}
+
+	private void EditHandler(string text)
+	{
+		//name = text;
+	}
+
+
+
+
+	private async Task GetInputFromPrompt()
+	{
+		// 1. Call the JavaScript function and await the result
+		userInput = await JSRuntime.InvokeAsync<string>("blazorInterop.showPrompt", "Please enter your name:");
+
+		// 2. The code here runs after the user interacts with the prompt
+		if (string.IsNullOrEmpty(userInput))
+		{
+			status = "Input cancelled or empty.";
+		}
+		else
+		{
+			// 3. Optional: Use a second JS Interop call for confirmation (using a built-in 'confirm' dialog)
+			bool isConfirmed = await JSRuntime.InvokeAsync<bool>("confirm", "Is this correct: " + userInput + "?");
+
+			if (isConfirmed)
+			{
+				status = "Input confirmed!";
+				// Now you can use the 'userInput' C# variable for further processing
+			}
+			else
+			{
+				status = "Confirmation cancelled.";
+				userInput = null;
+			}
+		}
+	}
+
+}

@@ -1,0 +1,25 @@
+﻿@page "/lifecycle-demo"
+
+<h3>Lifecycle Demo</h3>
+
+<p>Message: @message</p>
+
+<button class="btn btn-primary" @onclick="ChangeParameter">Change Parameter</button>
+
+<ChildComponentDemo Text="@childText" />
+
+@code {
+    private string message = "Parent created";
+    private string childText = "Initial text";
+
+    protected override void OnInitialized()
+    {
+        message = "Parent OnInitialized called";
+        Console.WriteLine(message);
+    }
+
+    private void ChangeParameter()
+    {
+        childText = $"Updated at {DateTime.Now:T}";
+    }
+}

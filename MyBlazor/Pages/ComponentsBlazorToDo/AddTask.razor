@@ -1,0 +1,40 @@
+﻿@using MyBlazor.Pages.Data
+@inject TaskService TaskService
+
+<MudTextField @bind-Value="_title"
+              Label="New task..."
+              Variant="Variant.Outlined"
+              Class="w-full"
+              Adornment="Adornment.End"
+              AdornmentIcon="@Icons.Material.Filled.Add"
+              OnAdornmentClick="AddNewTask"
+              OnKeyUp="HandleKeyDown" />
+
+@* OnKeyDown *@
+
+@code {
+    [Parameter] public EventCallback OnTaskAdded { get; set; }
+    private string _title = "";
+
+    [Parameter] public Guid ListId { get; set; }
+
+
+
+    private async Task AddNewTask()
+    {
+        if (string.IsNullOrWhiteSpace(_title))
+            return;
+
+    await TaskService.AddAsync(new TaskItem { Title = _title, ListId = ListId });
+        _title = "";
+        await OnTaskAdded.InvokeAsync();
+    }
+
+    private async Task HandleKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            await AddNewTask();
+        }
+    }
+}

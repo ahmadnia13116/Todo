@@ -1,0 +1,40 @@
+﻿@page "/lifecycle-async"
+
+<h3>Lifecycle Async Demo</h3>
+
+@if (isLoading)
+{
+    <p>Loading data...</p>
+}
+else
+{
+    <p><b>Data loaded:</b> @data</p>
+}
+
+@code {
+    private bool isLoading = true;
+    private string? data;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            Console.WriteLine("OnAfterRenderAsync: firstRender = true");
+            await LoadDataAsync();
+            StateHasChanged(); // برای رفرش صفحه بعد از بارگذاری داده
+        }
+        else
+        {
+            Console.WriteLine("OnAfterRenderAsync: firstRender = false");
+        }
+    }
+
+    private async Task LoadDataAsync()
+    {
+        Console.WriteLine("Loading data...");
+        await Task.Delay(2000); // شبیه‌سازی تاخیر API
+        data = $"Server time: {DateTime.Now:T}";
+        isLoading = false;
+        Console.WriteLine("Data loaded");
+    }
+}

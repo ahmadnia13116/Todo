@@ -1,0 +1,68 @@
+﻿@page "/todo/list/{ListId:guid}"
+@using MyBlazor.Pages.Data
+@inject TaskService TaskService
+@inject ListService ListService
+
+<MudContainer MaxWidth="MaxWidth.False" Class="mt-8">
+
+    @if (_list is null)
+    {
+        <MudText Typo="Typo.h6" Color="Color.Error">List not found 😕</MudText>
+    }
+    else
+    {
+        <MudPaper Class="pa-6" Elevation="4">
+            <MudText Typo="Typo.h5" Class="mb-4">📋 @_list.Name</MudText>
+
+            <AddTask OnTaskAdded="ReloadTasks" ListId="@ListId" />
+
+            <TaskList Tasks="_tasks" OnDelete="@DeleteTask" />
+        </MudPaper>
+    }
+</MudContainer>
+
+@code {
+    [Parameter] public Guid ListId { get; set; }
+
+    private ListItem? _list;
+    private List<TaskItem> _tasks = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await TaskService.InitializeAsync();
+        await ListService.InitializeAsync();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await LoadListAsync();
+    }
+
+    private async Task LoadListAsync()
+    {
+        _list = ListService.GetAll().FirstOrDefault(x => x.Id == ListId);
+
+        if (_list is not null)
+            _tasks = TaskService.GetAll()
+                .Where(t => t.ListId == ListId)
+                .ToList();
+        else
+            _tasks.Clear();
+
+        StateHasChanged();
+    }
+
+    private void ReloadTasks()
+    {
+        _tasks = TaskService.GetAll()
+            .Where(t => t.ListId == ListId)
+            .ToList();
+        StateHasChanged();
+    }
+
+    private async Task DeleteTask(Guid id)
+    {
+        await TaskService.DeleteAsync(id);
+        ReloadTasks();
+    }
+}

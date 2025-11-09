@@ -1,0 +1,97 @@
+﻿@page "/users"
+@using System.Net.Http.Json
+@inject HttpClient Http
+
+<MudPaper Class="pa-6" Elevation="4">
+    <MudText Typo="Typo.h5" Class="mb-4">لیست کاربران</MudText>
+
+    @if (users == null)
+    {
+        <MudProgressCircular Indeterminate="true" Color="Color.Primary" />
+    }
+    else
+    {
+        <MudTable Items="users" Hover="true" Bordered="true" Dense="true">
+            <HeaderContent>
+                <MudTh>نام</MudTh>
+                <MudTh>نام کاربری</MudTh>
+                <MudTh>ایمیل</MudTh>
+                <MudTh>شهر</MudTh>
+                <MudTh>شرکت</MudTh>
+                <MudTh Class="text-center">عملیات</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd>@context.Name</MudTd>
+                <MudTd>@context.Username</MudTd>
+                <MudTd>@context.Email</MudTd>
+                <MudTd>@context.Address?.City</MudTd>
+                <MudTd>@context.Company?.Name</MudTd>
+
+                <MudTd Class="text-center">
+                    <MudMenu Icon="@Icons.Material.Filled.MoreVert" Color="Color.Primary">
+                        <MudMenuItem OnClick="@(() => ViewDetails(context))">🔍 جزئیات</MudMenuItem>
+                        <MudMenuItem OnClick="@(() => EditUser(context))">✏️ ویرایش</MudMenuItem>
+                        <MudMenuItem OnClick="@(() => DeleteUser(context))">🗑️ حذف</MudMenuItem>
+                    </MudMenu>
+                </MudTd>
+            </RowTemplate>
+        </MudTable>
+    }
+</MudPaper>
+
+@code {
+    private List<User>? users;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            users = await Http.GetFromJsonAsync<List<User>>("https://jsonplaceholder.typicode.com/users");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"❌ خطا در دریافت داده‌ها: {ex.Message}");
+        }
+    }
+
+    private void ViewDetails(User user)
+    {
+        Console.WriteLine($"📋 جزئیات کاربر: {user.Name}");
+    }
+
+    private void EditUser(User user)
+    {
+        Console.WriteLine($"✏️ ویرایش کاربر: {user.Name}");
+    }
+
+    private void DeleteUser(User user)
+    {
+        Console.WriteLine($"🗑️ حذف کاربر: {user.Name}");
+    }
+
+    public class Address
+    {
+        public string Street { get; set; }
+        public string Suite { get; set; }
+        public string City { get; set; }
+        public string Zipcode { get; set; }
+    }
+
+    public class Company
+    {
+        public string Name { get; set; }
+        public string CatchPhrase { get; set; }
+    }
+
+    public class User
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Username { get; set; }
+        public string Email { get; set; }
+        public Address Address { get; set; }
+        public string Phone { get; set; }
+        public string Website { get; set; }
+        public Company Company { get; set; }
+    }
+}

@@ -37,8 +37,8 @@
 	private string lastName = "ahmadi";
 
 	[CascadingParameter(Name = "UserName")]
-	public string Name { get; set; }
+	public string? Name { get; set; }
 
 	[CascadingParameter(Name = "ThemeColor")]
-	public string Color { get; set; }
+	public string? Color { get; set; }
 }

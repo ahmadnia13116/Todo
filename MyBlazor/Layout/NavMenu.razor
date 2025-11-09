@@ -1,9 +1,81 @@
 ﻿<MudNavMenu>
-    <MudNavLink Href="/" Match="NavLinkMatch.All">Dashboard</MudNavLink>
-    <MudNavLink Href="/servers" Match="NavLinkMatch.Prefix">Servers</MudNavLink>
-    <MudNavGroup Title="Settings" Expanded="true">
-        <MudNavLink Href="/users" Match="NavLinkMatch.Prefix">Users</MudNavLink>
-        <MudNavLink Href="/security" Match="NavLinkMatch.Prefix">Security</MudNavLink>
-    </MudNavGroup>
-    <MudNavLink Href="/about" Match="NavLinkMatch.Prefix">About</MudNavLink>
+	<MudNavLink Href="/" Match="NavLinkMatch.All">Dashboard</MudNavLink>
+	<MudNavLink Href="/Index" Match="NavLinkMatch.Prefix">Index</MudNavLink>
+	<MudNavLink Href="/lifecycle-demo" Match="NavLinkMatch.Prefix">lifecycle</MudNavLink>
+	<MudNavLink Href="/lifecycle-async" Match="NavLinkMatch.Prefix">lifecycleAsync</MudNavLink>
+	<MudNavGroup Title="Settings" Expanded="false">
+		<MudNavLink Href="/Users" Match="NavLinkMatch.Prefix">Users</MudNavLink>
+		<MudNavLink Href="/Role" Match="NavLinkMatch.Prefix">Roles</MudNavLink>
+	</MudNavGroup>
+	<MudNavLink Href="/about" Match="NavLinkMatch.Prefix">About</MudNavLink>
+
+	<MudDivider Class="my-2" />
+	<MudText Typo="Typo.subtitle2" Class="ml-4">Lists</MudText>
+
+	@foreach (var list in _lists)
+	{
+		<MudStack Row="true" AlignItems="AlignItems.Center" Class="ml-2 my-1">
+			<MudNavLink Href="@($"/todo/list/{list.Id}")"
+						Icon="@Icons.Material.Filled.List"
+						OnClick="() => SelectList(list)"
+						Class="flex-grow-1">
+				@(list.Name)
+			</MudNavLink>
+
+			<MudIconButton Icon="@Icons.Material.Filled.Clear"
+						   Color="Color.Error"
+						   Size="Size.Small"
+						   Class="ml-1"
+						   OnClick="async _ => await DeleteList(list.Id)" />
+		</MudStack>
+	}
+	<MudStack Row="true" AlignItems="AlignItems.Center" Class="ml-2 my-1">
+		<MudTextField @bind-Value="_newListName"
+					  Placeholder="     New list..."
+					  Adornment="Adornment.End"
+					  AdornmentIcon="@Icons.Material.Filled.Add"
+					  OnAdornmentClick="AddList"
+					  OnKeyUp="HandleKeyDown" />
+	</MudStack>
 </MudNavMenu>
+
+@code {
+	[Inject] private ListService ListService { get; set; } = default!;
+	private List<ListItem> _lists = new();
+	private string _newListName = "";
+	private ListItem? _selectedList;
+
+	protected override async Task OnInitializedAsync()
+	{
+		await ListService.InitializeAsync();
+		_lists = ListService.GetAll().ToList();
+	}
+
+	private void SelectList(ListItem list)
+	{
+		_selectedList = list;
+	}
+	private async Task HandleKeyDown(KeyboardEventArgs e)
+	{
+		if (e.Key == "Enter")
+		{
+			await AddList();
+		}
+	}
+
+	private async Task AddList()
+	{
+		if (string.IsNullOrWhiteSpace(_newListName)) return;
+
+		var list = new ListItem { Name = _newListName };
+		await ListService.AddListAsync(list);
+		_lists = ListService.GetAll().ToList();
+		_newListName = "";
+	}
+
+	private async Task DeleteList(Guid id)
+	{
+		await ListService.DeleteListAsync(id);
+		_lists = ListService.GetAll().ToList();
+	}
+}

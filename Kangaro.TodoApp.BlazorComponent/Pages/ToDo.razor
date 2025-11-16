@@ -1,0 +1,85 @@
+﻿@page "/todo/list/{ListId:guid}"
+
+
+@inject ITaskItemService TaskService
+@inject ICategoryService CategoryService
+
+<MudContainer MaxWidth="MaxWidth.False" Class="mt-8">
+	<MudTabs @bind-ActivePanelIndex="_activeTab">
+		<MudTabPanel Text="Grid">
+			<TaskGrid />
+		</MudTabPanel>
+
+		<MudTabPanel Text="Lists">
+			@if (_list is null)
+			{
+				<MudText Typo="Typo.h6" Color="Color.Error">List not found 😕</MudText>
+			}
+			else
+			{
+				<MudPaper Class="pa-6" Elevation="4">
+					<MudText Typo="Typo.h5" Class="mb-4">📋 @_list.Name</MudText>
+
+					<AddTask OnTaskAdded="ReloadTasks" ListId="@ListId" />
+
+					<TaskList Tasks="_tasks" OnDelete="@DeleteTask" />
+				</MudPaper>
+			}
+		</MudTabPanel>
+	</MudTabs>
+
+</MudContainer>
+
+@code {
+	private int _activeTab = 1;
+
+	[Parameter]
+	public Guid ListId { get; set; }
+
+	private ListItemDto? _list;
+	private List<TaskItemDto> _tasks = new();
+
+	protected override async Task OnInitializedAsync()
+	{
+		await TaskService.GetListAsync();
+		await CategoryService.GetListAsync();
+	}
+
+
+	protected override async Task OnParametersSetAsync()
+	{
+		await LoadListAsync();
+	}
+
+	private async Task LoadListAsync()
+	{
+		_list = await CategoryService.GetAsync(ListId);
+
+		if (_list is not null)
+		{
+
+			_tasks = new List<TaskItemDto>(await TaskService.GetListAsync());
+
+			_tasks = _tasks.Where(t => t.ListId == ListId).ToList();
+		}
+		else
+			_tasks.Clear();
+
+		StateHasChanged();
+	}
+
+	private async Task ReloadTasks()
+	{
+		_tasks = new List<TaskItemDto>(await TaskService.GetListAsync());
+		
+		_tasks = _tasks.Where(t => t.ListId == ListId)
+			.ToList();
+		StateHasChanged();
+	}
+
+	private async Task DeleteTask(Guid id)
+	{
+		await TaskService.DeleteAsync(id);
+		await ReloadTasks();
+	}
+}

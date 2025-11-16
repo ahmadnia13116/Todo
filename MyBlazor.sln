@@ -11,6 +11,18 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "01.MyBlazor.Libraroes", "01
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "02.MyBlazor", "02.MyBlazor", "{FF6F6D90-125C-4F66-BF25-2812CC10F56E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kangaro.TodoApp.Contracts", "Kangaro.TodoApp.Contracts\Kangaro.TodoApp.Contracts.csproj", "{4B875F8D-7370-4822-8E40-3919277A6E8F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kangaro.TodoApp.Application", "Kangaro.TodoApp.Application\Kangaro.TodoApp.Application.csproj", "{F08108A7-DB51-40A5-B2B1-4CD1438AEEF7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kangaro.TodoApp.Cli", "Kangaro.TodoApp.Cli\Kangaro.TodoApp.Cli.csproj", "{12527BC2-FCCC-4930-B1D6-B49E872FDA12}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kangaro.TodoApp.MAUI", "Kangaro.TodoApp.MAUI\Kangaro.TodoApp.MAUI.csproj", "{5400B159-B81E-4FC6-BB5B-988985E75B7B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kangaro.TodoApp.BlazorComponent", "Kangaro.TodoApp.BlazorComponent\Kangaro.TodoApp.BlazorComponent.csproj", "{FFBE8E92-75C4-4A7F-AA3D-B4C2DEF2F29A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MauiApp1", "MauiApp1\MauiApp1.csproj", "{3B309F23-20D6-479A-BE38-DF97A2781CEE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,6 +37,34 @@ Global
 		{D32F84CB-0323-4D0E-B8DB-E596D839ED94}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D32F84CB-0323-4D0E-B8DB-E596D839ED94}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D32F84CB-0323-4D0E-B8DB-E596D839ED94}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4B875F8D-7370-4822-8E40-3919277A6E8F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B875F8D-7370-4822-8E40-3919277A6E8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B875F8D-7370-4822-8E40-3919277A6E8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B875F8D-7370-4822-8E40-3919277A6E8F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F08108A7-DB51-40A5-B2B1-4CD1438AEEF7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F08108A7-DB51-40A5-B2B1-4CD1438AEEF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F08108A7-DB51-40A5-B2B1-4CD1438AEEF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F08108A7-DB51-40A5-B2B1-4CD1438AEEF7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{12527BC2-FCCC-4930-B1D6-B49E872FDA12}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12527BC2-FCCC-4930-B1D6-B49E872FDA12}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12527BC2-FCCC-4930-B1D6-B49E872FDA12}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12527BC2-FCCC-4930-B1D6-B49E872FDA12}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5400B159-B81E-4FC6-BB5B-988985E75B7B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5400B159-B81E-4FC6-BB5B-988985E75B7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5400B159-B81E-4FC6-BB5B-988985E75B7B}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{5400B159-B81E-4FC6-BB5B-988985E75B7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5400B159-B81E-4FC6-BB5B-988985E75B7B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5400B159-B81E-4FC6-BB5B-988985E75B7B}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{FFBE8E92-75C4-4A7F-AA3D-B4C2DEF2F29A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FFBE8E92-75C4-4A7F-AA3D-B4C2DEF2F29A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FFBE8E92-75C4-4A7F-AA3D-B4C2DEF2F29A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FFBE8E92-75C4-4A7F-AA3D-B4C2DEF2F29A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3B309F23-20D6-479A-BE38-DF97A2781CEE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3B309F23-20D6-479A-BE38-DF97A2781CEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3B309F23-20D6-479A-BE38-DF97A2781CEE}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{3B309F23-20D6-479A-BE38-DF97A2781CEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3B309F23-20D6-479A-BE38-DF97A2781CEE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3B309F23-20D6-479A-BE38-DF97A2781CEE}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

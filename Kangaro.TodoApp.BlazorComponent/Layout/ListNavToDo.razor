@@ -1,0 +1,49 @@
+﻿
+
+<MudDivider Class="my-2" />
+<MudText Typo="Typo.subtitle2" Class="ml-4">Lists</MudText>
+
+@foreach (var list in Lists)
+{
+	<MudStack Row="true" AlignItems="AlignItems.Center" Class="ml-2 my-1">
+		<MudNavLink Href="@($"/todo/list/{list.Id}")"
+					Icon="@Icons.Material.Filled.List"
+					OnClick="() => OnSelectList.InvokeAsync(list)"
+					Class="flex-grow-1">
+			@(list.Name)
+		</MudNavLink>
+
+		<MudIconButton Icon="@Icons.Material.Filled.Clear"
+					   Color="Color.Error"
+					   Size="Size.Small"
+					   Class="ml-1"
+					   OnClick="async _ => await OnDeleteList.InvokeAsync(list.Id)" />
+	</MudStack>
+}
+
+<MudStack Row="true" AlignItems="AlignItems.Center" Class="ml-2 my-1">
+	<MudTextField @bind-Value="NewListName"
+				  Placeholder="     New list..."
+				  Adornment="Adornment.End"
+				  AdornmentIcon="@Icons.Material.Filled.Add"
+				  OnAdornmentClick="() => OnAddList.InvokeAsync(NewListName)"
+				  OnKeyUp="HandleKeyDown" />
+</MudStack>
+
+@code {
+	[Parameter] public List<ListItemDto> Lists { get; set; } = new();
+	[Parameter] public EventCallback<ListItemDto> OnSelectList { get; set; }
+	[Parameter] public EventCallback<string> OnAddList { get; set; }
+	[Parameter] public EventCallback<Guid> OnDeleteList { get; set; }
+
+	private string NewListName { get; set; } = "";
+
+	private async Task HandleKeyDown(KeyboardEventArgs e)
+	{
+		if (e.Key == "Enter" && !string.IsNullOrWhiteSpace(NewListName))
+		{
+			await OnAddList.InvokeAsync(NewListName);
+			NewListName = "";
+		}
+	}
+}

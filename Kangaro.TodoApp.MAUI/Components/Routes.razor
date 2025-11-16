@@ -1,0 +1,18 @@
+﻿@using System.Reflection
+<Router AppAssembly="@typeof(MauiProgram).Assembly" AdditionalAssemblies="Assemblies">
+    <Found Context="routeData">
+        <RouteView RouteData="@routeData" DefaultLayout="@typeof(BlazorComponent.Layout.MainLayout)" />
+        <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+    </Found>
+</Router>
+
+
+@code {
+
+	private List<Assembly> Assemblies = new List<Assembly>
+	{
+
+		typeof(Kangaro.TodoApp.BlazorComponent.Pages.ToDo).Assembly
+	};
+
+}

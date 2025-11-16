@@ -1,0 +1,167 @@
+﻿@using Kangaro.TodoApp.Contracts.Dtos
+<MudStack Spacing="4">
+	<MudDrawer Anchor="Anchor.Right"
+			   Elevation="10"
+			   Variant="DrawerVariant.Responsive"
+			   ClipMode="DrawerClipMode.Never"
+			   Breakpoint="Breakpoint.Md"
+			   Open="@IsOpen"
+			   Class="p-4"
+			   Style="position: relative;">
+		<MudIconButton Icon="@Icons.Material.Filled.Clear"
+					   Color="Color.Error"
+					   Size="Size.Medium"
+					  
+					   OnClick="Close"
+					   Style="position: absolute; top: 10px; right: 10px;" />
+		@if (Task is not null)
+		{
+			<MudStack Spacing="3"
+					  style="padding: 10%; margin:5%">
+				<MudText Typo="Typo.h6">@Task.Title</MudText>
+
+				<MudTextField @bind-Value="Task.Description"
+							  Label="Description"
+							  Lines="1"
+							  AutoGrow="true"
+							  FullWidth="true" />
+
+				<MudDatePicker @bind-Date="Task.DueDate" Label="Due Date" />
+
+				<MudText Typo="Typo.subtitle2" Class="mt-2">Choose Subtasks</MudText>
+
+				@foreach (var option in _subTaskOptions)
+				{
+					<MudCheckBox T="bool"
+								 Label="@option"
+								 Checked="@Task.SubTasks.Any(st => st.Title == option)"
+								 OnCheckedChanged="checked => OnOptionChanged(option, checked)" />
+				}
+
+				<MudText Typo="Typo.subtitle2" Class="mt-2">Or Add New SubTask</MudText>
+				<MudTextField Label="New SubTask"
+							  @bind-Value="NewSubTask"
+							  Adornment="Adornment.End"
+							  AdornmentIcon="@Icons.Material.Filled.Add"
+							  OnAdornmentClick="AddSubTask"
+							  FullWidth="true"
+							  OnKeyUp="HandleKeyDown" />
+
+				<MudList T="SubTask" Class="mt-4">
+					@if (Task?.SubTasks != null && Task.SubTasks.Any())
+					{
+						@foreach (var sub in Task.SubTasks)
+						{
+							<MudListItem>
+								<MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+									@* 	<MudCheckBox T="bool" @bind-Checked="sub.IsCompleted" />
+ *@
+									<MudText>@sub.Title</MudText>
+									<MudIconButton Icon="@Icons.Material.Filled.Delete"
+												   Color="Color.Error"
+												   Size="Size.Small"
+												   OnClick="@(() => RemoveSubTask(sub))" />
+								</MudStack>
+							</MudListItem>
+						}
+					}
+					else
+					{
+						<MudText Color="Color.Error" Class="pl-2">No subtasks yet.</MudText>
+					}
+				</MudList>
+
+				<MudButton Variant="Variant.Filled"
+						   Color="Color.Primary"
+						   OnClick="Close"
+						   Class="mt-4">
+					Close
+				</MudButton>
+			</MudStack>
+		}
+	</MudDrawer>
+
+</MudStack>
+
+@code {
+	[Parameter] public TaskItemDto Task { get; set; } = default!;
+	[Parameter] public bool IsOpen { get; set; }
+	[Parameter] public EventCallback<bool> IsOpenChanged { get; set; }
+
+	private List<string> _subTaskOptions = new()
+		{
+		"Design UI", "Write Tests", "Fix Bugs", "Deploy to Production"
+		};
+
+	private string NewSubTask { get; set; } = "";
+
+	private void OnOptionChanged(string option, bool isChecked)
+	{
+		Console.WriteLine($"[LOG] Option '{option}' changed -> {isChecked}");
+
+		if (isChecked)
+		{
+			if (!Task.SubTasks.Any(st => st.Title == option))
+			{
+				Task.SubTasks.Add(new SubTask { Title = option, IsCompleted = false });
+				Console.WriteLine($"[LOG] Added new subtask: {option}");
+			}
+		}
+		else
+		{
+			var existing = Task.SubTasks.FirstOrDefault(st => st.Title == option);
+			if (existing != null)
+			{
+				Task.SubTasks.Remove(existing);
+				Console.WriteLine($"[LOG] Removed subtask: {option}");
+			}
+		}
+
+		StateHasChanged();
+	}
+
+	private void AddSubTask()
+	{
+		Console.WriteLine($"[LOG] Trying to add new subtask: '{NewSubTask}'");
+
+		if (string.IsNullOrWhiteSpace(NewSubTask))
+		{
+			Console.WriteLine("[WARN] Subtask name is empty!");
+			return;
+		}
+
+		if (!Task.SubTasks.Any(st => st.Title == NewSubTask))
+		{
+			Task.SubTasks.Add(new SubTask { Title = NewSubTask.Trim(), IsCompleted = false });
+			Console.WriteLine($"[LOG] Added SubTask manually: {NewSubTask}");
+		}
+		else
+		{
+			Console.WriteLine($"[WARN] SubTask '{NewSubTask}' already exists!");
+		}
+
+		NewSubTask = "";
+		StateHasChanged();
+	}
+
+	private void RemoveSubTask(SubTask sub)
+	{
+		Console.WriteLine($"[LOG] Removing subtask: {sub.Title}");
+		Task.SubTasks.Remove(sub);
+		StateHasChanged();
+	}
+
+	private async Task Close()
+	{
+		Console.WriteLine("[LOG] Closing Drawer...");
+		await IsOpenChanged.InvokeAsync(false);
+	}
+
+	private void HandleKeyDown(KeyboardEventArgs e)
+	{
+		if (e.Key == "Enter")
+		{
+			AddSubTask();
+		}
+	}
+}

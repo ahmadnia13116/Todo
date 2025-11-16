@@ -1,0 +1,164 @@
+﻿@* @page "/todo/list/{ListId:guid}"
+@using MudBlazor
+@using MyBlazor.Pages.Data
+@inject TaskService TaskService
+@inject ListService ListService
+@inject ISnackbar Snackbar
+
+<MudContainer MaxWidth="MaxWidth.False" Class="mt-8">
+    @if (_list is null)
+    {
+        <MudText Typo="Typo.h6" Color="Color.Error">List not found 😕</MudText>
+    }
+    else
+    {
+        <MudPaper Class="pa-6" Elevation="4">
+            <MudText Typo="Typo.h5" Class="mb-4">📋 @_list.Name</MudText>
+
+            <MudTable Items="_tasks" Hover="true" Dense="true" CanCancelEdit="true"
+                      RowEditPreview="BackupTask" RowEditCancel="CancelTaskEdit" RowEditCommit="CommitTaskEdit"
+                      @bind-SelectedItem="selectedTask">
+
+                <ToolBarContent>
+                    <MudTextField @bind-Value="searchString" Placeholder="Search tasks..." Adornment="Adornment.Start"
+                                  AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0" />
+                    <MudSpacer />
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="AddNewTask">+ Add Task</MudButton>
+                </ToolBarContent>
+
+                <HeaderContent>
+                    <MudTh>Title</MudTh>
+                    <MudTh>Description</MudTh>
+                    <MudTh>Due Date</MudTh>
+                    <MudTh>Completed</MudTh>
+                    <MudTh>Actions</MudTh>
+                </HeaderContent>
+
+                <RowTemplate>
+                    <MudTd DataLabel="Title">@context.Title</MudTd>
+                    <MudTd DataLabel="Description">@context.Description</MudTd>
+                    <MudTd DataLabel="Due Date">@context.DueDate.ToShortDateString()</MudTd>
+                    <MudTd DataLabel="Completed">
+                        <MudCheckBox T="bool" Checked="context.IsCompleted"
+                                     OnCheckedChanged="val => context.IsCompleted = val" />
+                    </MudTd>
+                    <MudTd>
+                        <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error"
+                                       OnClick="() => DeleteTask(context.Id)" />
+                    </MudTd>
+                </RowTemplate>
+
+                <RowEditingTemplate>
+                    <MudTd>
+                        <MudTextField @bind-Value="context.Title" Required />
+                    </MudTd>
+                    <MudTd>
+                        <MudTextField @bind-Value="context.Description" />
+                    </MudTd>
+                    <MudTd>
+                        <MudDatePicker @bind-Date="context.DueDate" />
+                    </MudTd>
+                    <MudTd>
+                        <MudCheckBox T="bool" @bind-Checked="context.IsCompleted" />
+                    </MudTd>
+                    <MudTd>
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="() => CommitTaskEdit(context)">
+                            Save
+                        </MudButton>
+                        <MudButton Variant="Variant.Text" Color="Color.Secondary" OnClick="() => CancelTaskEdit(context)">
+                            Cancel
+                        </MudButton>
+                    </MudTd>
+                </RowEditingTemplate>
+
+                <PagerContent>
+                    <MudTablePager />
+                </PagerContent>
+            </MudTable>
+        </MudPaper>
+    }
+</MudContainer>
+
+@code {
+    [Parameter] public Guid ListId { get; set; }
+    private ListItem? _list;
+    private List<TaskItem> _tasks = new();
+    private TaskItem? selectedTask;
+    private TaskItem? taskBackup;
+    private string searchString = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await TaskService.InitializeAsync();
+        await ListService.InitializeAsync();
+        await LoadTasks();
+    }
+
+    private async Task LoadTasks()
+    {
+        _list = ListService.GetAll().FirstOrDefault(x => x.Id == ListId);
+        if (_list != null)
+        {
+            _tasks = TaskService.GetAll().Where(t => t.ListId == ListId).ToList();
+        }
+        else
+        {
+            _tasks.Clear();
+        }
+        StateHasChanged();
+    }
+
+    private void AddNewTask()
+    {
+        var newTask = new TaskItem
+            {
+                Id = Guid.NewGuid(),
+                ListId = ListId,
+                Title = "New Task",
+                Description = "",
+                DueDate = DateTime.Today,
+                IsCompleted = false
+            };
+        _tasks.Insert(0, newTask);
+    }
+
+    private void BackupTask(TaskItem task)
+    {
+        taskBackup = new TaskItem
+            {
+                Id = task.Id,
+                Title = task.Title,
+                Description = task.Description,
+                DueDate = task.DueDate,
+                IsCompleted = task.IsCompleted,
+                ListId = task.ListId
+            };
+    }
+
+    private void CancelTaskEdit(TaskItem task)
+    {
+        if (taskBackup != null && task.Id == taskBackup.Id)
+        {
+            task.Title = taskBackup.Title;
+            task.Description = taskBackup.Description;
+            task.DueDate = taskBackup.DueDate;س
+            task.IsCompleted = taskBackup.IsCompleted;
+        }
+        taskBackup = null;
+    }
+
+    private async Task CommitTaskEdit(TaskItem task)
+    {
+        await TaskService.AddAsync(task); // باید UpdateAsync عمومی داشته باشه
+        taskBackup = null;
+        Snackbar.Add($"Task '{task.Title}' saved!", Severity.Success);
+    }
+
+    private async Task DeleteTask(Guid id)
+    {
+        await TaskService.DeleteAsync(id);
+        _tasks.RemoveAll(t => t.Id == id);
+        Snackbar.Add("Task deleted!", Severity.Warning);
+    }
+}
+ *@

@@ -7,13 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.11" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.11" PrivateAssets="all" />
-    <PackageReference Include="MudBlazor" Version="8.13.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.22" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.22" PrivateAssets="all" />
+    <PackageReference Include="MudBlazor" Version="8.14.0" />
     <PackageReference Include="MudBlazor.ThemeManager" Version="3.0.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Kangaro.TodoApp.Application\Kangaro.TodoApp.Application.csproj" />
+    <ProjectReference Include="..\Kangaro.TodoApp.BlazorComponent\Kangaro.TodoApp.BlazorComponent.csproj" />
     <ProjectReference Include="..\MyBlazor.Libraroes\MyBlazor.Libraroes.csproj" />
   </ItemGroup>
 

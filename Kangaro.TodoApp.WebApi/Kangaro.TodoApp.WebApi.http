@@ -1,0 +1,6 @@
+@Kangaro.TodoApp.WebApi_HostAddress = http://localhost:5155
+
+GET {{Kangaro.TodoApp.WebApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

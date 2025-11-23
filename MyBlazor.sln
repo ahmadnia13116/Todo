@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.12.35506.116
+# Visual Studio Version 18
+VisualStudioVersion = 18.0.11205.157 d18.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyBlazor", "MyBlazor\MyBlazor.csproj", "{F158DF8B-231B-499E-8CB3-97484C4DDDDC}"
 EndProject
@@ -22,6 +22,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kangaro.TodoApp.BlazorComponent", "Kangaro.TodoApp.BlazorComponent\Kangaro.TodoApp.BlazorComponent.csproj", "{FFBE8E92-75C4-4A7F-AA3D-B4C2DEF2F29A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MauiApp1", "MauiApp1\MauiApp1.csproj", "{3B309F23-20D6-479A-BE38-DF97A2781CEE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kangaro.TodoApp.WebApi", "Kangaro.TodoApp.WebApi\Kangaro.TodoApp.WebApi.csproj", "{E59030A9-ADCF-4206-9921-885BC4E60793}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -65,6 +67,10 @@ Global
 		{3B309F23-20D6-479A-BE38-DF97A2781CEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3B309F23-20D6-479A-BE38-DF97A2781CEE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3B309F23-20D6-479A-BE38-DF97A2781CEE}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{E59030A9-ADCF-4206-9921-885BC4E60793}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E59030A9-ADCF-4206-9921-885BC4E60793}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E59030A9-ADCF-4206-9921-885BC4E60793}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E59030A9-ADCF-4206-9921-885BC4E60793}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

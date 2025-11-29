@@ -7,6 +7,7 @@ namespace Kangaro.TodoApp.Application.Services;
 public class CategoryApiService : ICategoryService
 {
     private readonly HttpClient _httpClient;
+    private const string _controllerName = "category";
 
     public CategoryApiService(HttpClient httpClient)
     {
@@ -16,7 +17,7 @@ public class CategoryApiService : ICategoryService
     public async Task CreateAsync(ListItemDto item, CancellationToken cancellationToken = default)
     {
         await _httpClient.PostAsJsonAsync(
-            "/create",
+            $"{_controllerName}/create",
             item,
             cancellationToken);
     }
@@ -24,7 +25,7 @@ public class CategoryApiService : ICategoryService
     public async Task DeleteAsync(object id, CancellationToken cancellationToken = default)
     {
         await _httpClient.DeleteAsync(
-            $"/delete/{id}",
+            $"{_controllerName}/delete/{id}",
             cancellationToken);
     }
 
@@ -32,13 +33,13 @@ public class CategoryApiService : ICategoryService
         object id,
         CancellationToken cancellationToken = default)
     {
-        var item = await _httpClient.GetFromJsonAsync<ListItemDto>($"/get/{id}", cancellationToken);
+        var item = await _httpClient.GetFromJsonAsync<ListItemDto>($"{_controllerName}/get/{id}", cancellationToken);
         return item;
     }
 
     public async Task<IEnumerable<ListItemDto>> GetListAsync(CancellationToken cancellationToken = default)
     {
-        var items = await _httpClient.GetFromJsonAsync<List<ListItemDto>>("/getList", cancellationToken);
+        var items = await _httpClient.GetFromJsonAsync<List<ListItemDto>>($"{_controllerName}/getList", cancellationToken);
         return items;
     }
 }

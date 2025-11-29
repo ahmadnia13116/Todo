@@ -1,23 +1,40 @@
+﻿using Kangaro.TodoApp.Application.ba.Service.Category;
+using Scalar.AspNetCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy
+            .AllowAnyOrigin()    // اجازه همه Originها
+            .AllowAnyHeader()    // اجازه همه هدرها
+            .AllowAnyMethod();   // اجازه همه متدها (GET, POST, DELETE, ...)
+    });
+});
+
 
 builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+builder.Services.AddHealthChecks();
+builder.Services.AddScoped<ICategoryServicee, CategoryService>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.MapOpenApi();        
+    app.MapScalarApiReference();   
 }
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
+app.UseCors("AllowAll");
 
+app.UseAuthorization();
 app.MapControllers();
+
+app.MapHealthChecks("/health");
 
 app.Run();

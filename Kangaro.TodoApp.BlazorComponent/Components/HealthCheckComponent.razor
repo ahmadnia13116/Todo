@@ -1,0 +1,24 @@
+﻿@inject IHealthCheckService HealthCheckService
+@inject ISnackbar Snackbar
+
+<MudButton ButtonType="ButtonType.Button"
+           Color="Color.Primary"
+           OnClick="CheckHealth">
+    Health check
+</MudButton>
+
+
+@code {
+    private async Task CheckHealth()
+    {
+        try
+        {
+            await HealthCheckService.HealthAsync();
+            Snackbar.Add("اتصال برقرار است", Severity.Success);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add(ex.Message, Severity.Error);
+        }
+    }
+}

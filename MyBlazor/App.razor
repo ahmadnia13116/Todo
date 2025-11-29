@@ -1,4 +1,5 @@
 ﻿@using System.Reflection
+@using Kangaro.TodoApp.BlazorComponent.Layout
 <Router AppAssembly="@typeof(App).Assembly" AdditionalAssemblies="Assemblies">
 	<Found Context="routeData">
 		<RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
@@ -21,4 +22,4 @@
 		typeof(Kangaro.TodoApp.BlazorComponent.Pages.ToDo).Assembly
 	};
 
-}
+} 
